@@ -42,7 +42,7 @@ const SearchScreen: React.FC = () => {
       setResults([]);
     }
   };
-  // now everytime our api not be called , api will be called after the delay of 400 ms
+
   const handleTextDebounce = useCallback(debounce(handleSearch, 400), []);
 
   return (

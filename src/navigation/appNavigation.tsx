@@ -4,7 +4,7 @@ import {HomeScreen, MovieScreen, PersonScreen, SearchScreen} from '../screens';
 
 const Stack = createNativeStackNavigator();
 
-const AppNavigation: React.FC<any> = () => {
+const AppNavigation: React.FC = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>

@@ -9,13 +9,14 @@ import React from 'react';
 import Carousel from 'react-native-snap-carousel';
 import {useNavigation} from '@react-navigation/native';
 import {image500} from '../../services/constants';
+import {IMovieDetail} from '../../screens/MovieScreen/types';
+import {IMovieCard, ITrendingMovies} from './types';
 
 let {width, height} = Dimensions.get('window');
 
-const TrendingMovies: React.FC<any> = ({data}) => {
+const TrendingMovies: React.FC<ITrendingMovies> = ({data}) => {
   const navigation = useNavigation();
-  // this function will navigate to the Movie Screen with item/data
-  const handleClick = item => {
+  const handleClick = (item: IMovieDetail) => {
     navigation.navigate('Movie', item);
   };
 
@@ -37,12 +38,11 @@ const TrendingMovies: React.FC<any> = ({data}) => {
   );
 };
 
-const MovieCard: React.FC<any> = ({item, handleClick}) => {
+const MovieCard: React.FC<IMovieCard> = ({item, handleClick}) => {
   return (
     <TouchableWithoutFeedback onPress={() => handleClick(item)}>
       <Image
-        // source={require('../assets/images/moviePoster1.png')}
-        source={{uri: image500(item.poster_path)}}
+        source={{uri: image500(item.poster_path)!!}}
         style={{
           width: width * 0.6,
           height: height * 0.4,

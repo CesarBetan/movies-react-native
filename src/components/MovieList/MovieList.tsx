@@ -42,7 +42,6 @@ const MovieList: React.FC<IMovieList> = ({title, hideSeeAll, data}) => {
             onPress={() => navigation.push('Movie', item)}>
             <View className="space-y-4 mr-4">
               <Image
-                // source={require('../assets/images/moviePoster2.png')}
                 source={{
                   uri: image185(item.poster_path) ?? fallbackMoviePoster,
                 }}
