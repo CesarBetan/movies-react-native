@@ -15,11 +15,11 @@ import {IMovieList} from './types';
 
 let {width, height} = Dimensions.get('window');
 
-const MovieList: React.FC<IMovieList> = ({title, hideSeeAll, data}) => {
+const MovieList: React.FC<IMovieList> = ({title, hideSeeAll, data, testID}) => {
   const navigation = useNavigation();
 
   return (
-    <View className="mb-8 space-y-4">
+    <View className="mb-8 space-y-4" testID={testID}>
       <View className="mx-4 mb-2 flex-row justify-between items-center">
         <Text className="text-white text-xl">{title}</Text>
         {!hideSeeAll && (
@@ -39,6 +39,7 @@ const MovieList: React.FC<IMovieList> = ({title, hideSeeAll, data}) => {
         {data.map((item, index) => (
           <TouchableWithoutFeedback
             key={index}
+            testID={`${testID}-movie-${index}`}
             onPress={() => navigation.push('Movie', item)}>
             <View className="space-y-4 mr-4">
               <Image

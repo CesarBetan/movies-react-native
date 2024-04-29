@@ -14,14 +14,14 @@ import {IMovieCard, ITrendingMovies} from './types';
 
 let {width, height} = Dimensions.get('window');
 
-const TrendingMovies: React.FC<ITrendingMovies> = ({data}) => {
+const TrendingMovies: React.FC<ITrendingMovies> = ({data, testID}) => {
   const navigation = useNavigation();
   const handleClick = (item: IMovieDetail) => {
     navigation.navigate('Movie', item);
   };
 
   return (
-    <View className="mb-8">
+    <View testID={testID} className="mb-8">
       <Text className="text-white text-xl mx-4 mb-5">Trending </Text>
       <Carousel
         data={data}

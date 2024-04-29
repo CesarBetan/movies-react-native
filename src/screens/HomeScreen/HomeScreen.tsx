@@ -81,7 +81,7 @@ const HomeScreen: React.FC = () => {
   }, []);
 
   return (
-    <View className="flex-1 bg-neutral-800">
+    <View testID="home-screen" className="flex-1 bg-neutral-800">
       <View className={ios ? '-mb-2' : 'mb-4'}>
         <StatusBar dark-content />
         <View className="mt-4 flex-row justify-between items-center mx-4">
@@ -89,27 +89,44 @@ const HomeScreen: React.FC = () => {
             <Text style={styles.text}>Movies</Text> DB
           </Text>
 
-          <TouchableOpacity onPress={() => navigation.navigate('Search')}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Search')}
+            testID="search-button">
             <MagnifyingGlassIcon size={30} strokeWidth={2} color="white" />
           </TouchableOpacity>
         </View>
       </View>
 
       {loading || loadingTrending || loadingTopRated || loadingUpcoming ? (
-        <Loading />
+        <Loading testID="loading-indicator" />
       ) : (
-        <ScrollView showsVerticalScrollIndicator={false} className="mb-6">
-          {trending?.length > 0 && <TrendingMovies data={trending} />}
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          className="mb-6"
+          testID="content-scrollview">
+          {trending?.length > 0 && (
+            <TrendingMovies data={trending} testID="trending-movies" />
+          )}
           {upcoming?.length > 0 && (
-            <MovieList title="Upcoming" data={upcoming} hideSeeAll={true} />
+            <MovieList
+              title="Upcoming"
+              data={upcoming}
+              hideSeeAll={true}
+              testID="upcoming-movies"
+            />
           )}
           {topRated?.length > 0 && (
-            <MovieList title="Top rated" data={topRated} hideSeeAll={true} />
+            <MovieList
+              title="Top rated"
+              data={topRated}
+              hideSeeAll={true}
+              testID="top-rated-movies"
+            />
           )}
         </ScrollView>
       )}
       {errorEp && (
-        <View>
+        <View testID="error-message">
           <Text>There was en errant error getting the entertainment</Text>
         </View>
       )}

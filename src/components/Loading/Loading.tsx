@@ -2,12 +2,14 @@ import {View, Dimensions} from 'react-native';
 import React from 'react';
 import {theme} from '../../theme';
 import * as Progress from 'react-native-progress';
+import {ILoading} from './types';
 
 const {width, height} = Dimensions.get('window');
 
-const Loading = () => {
+const Loading: React.FC<ILoading> = ({testID}) => {
   return (
     <View
+      testID={testID}
       style={{height, width}}
       className="absolute flex-row justify-center items-center">
       <Progress.CircleSnail
