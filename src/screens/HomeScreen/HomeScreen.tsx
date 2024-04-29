@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   StatusBar,
+  RefreshControl,
 } from 'react-native';
 import {MagnifyingGlassIcon} from 'react-native-heroicons/outline';
 import {styles} from '../../theme/index';
@@ -28,6 +29,7 @@ const HomeScreen: React.FC = () => {
 
   const [errorEp, setErrorEp] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   const {getTrending, loading: loadingTrending} = useGetTrending();
   const {getTopRated, loading: loadingTopRated} = useGetTopRated();
@@ -73,6 +75,20 @@ const HomeScreen: React.FC = () => {
     setLoading(false);
   };
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await Promise.all([
+        getTrendingMovies(),
+        getUpcomingMovies(),
+        getTopRatedMovies(),
+      ]);
+    } catch (error) {
+      setErrorEp(true);
+    }
+    setRefreshing(false);
+  };
+
   useEffect(() => {
     getTrendingMovies();
     getUpcomingMovies();
@@ -103,7 +119,15 @@ const HomeScreen: React.FC = () => {
         <ScrollView
           showsVerticalScrollIndicator={false}
           className="mb-6"
-          testID="content-scrollview">
+          testID="content-scrollview"
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={['#fff']} // Customize the color of the refresh indicator for Android
+              tintColor={'#fff'} // Customize the color of the refresh indicator for iOS
+            />
+          }>
           {trending?.length > 0 && (
             <TrendingMovies data={trending} testID="trending-movies" />
           )}
