@@ -48,7 +48,6 @@ const PersonScreen: React.FC = () => {
         url: `/person/${item.id}?api_key=${API_KEY}`,
       });
       if (res) {
-        console.log(res.data, 'detail');
         setDetails(res.data);
       }
     } catch (e) {
@@ -63,7 +62,7 @@ const PersonScreen: React.FC = () => {
         url: `/person/${item.id}/movie_credits?api_key=${API_KEY}`,
       });
       if (res) {
-        setMovies(res.data.results);
+        setMovies(res.data.cast);
       }
     } catch (e) {
       setErrorEp(true);
