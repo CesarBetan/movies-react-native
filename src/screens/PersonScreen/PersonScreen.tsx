@@ -20,46 +20,62 @@ import {API_KEY} from '../../config/environment';
 import {Loading} from '../../components/Loading';
 import {MovieList} from '../../components/MovieList';
 import useGetPersonMovies from '../../services/Person/useGetPersonMovies';
+import {IMovieDetail} from '../MovieScreen/types';
+import {PersonDetailsRouteProp} from './types';
 
 let {width, height} = Dimensions.get('window');
 const ios = Platform.OS == 'ios';
 const topMargin = ios ? '' : ' my-3';
 
 const PersonScreen: React.FC = () => {
-  const {params: item} = useRoute();
+  const {params} = useRoute<PersonDetailsRouteProp>();
+  const item = params;
   const navigation = useNavigation();
-  const [isFavorite, toggleFavorite] = useState(false);
+  const [details, setDetails] = useState<any>();
+  const [movies, setMovies] = useState<IMovieDetail[]>([]);
+
+  const [errorEp, setErrorEp] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
 
-  const {
-    getPersonDetail,
-    data: dataPerson,
-    loading: loadingDetail,
-  } = useGetPersonDetail();
+  const {getPersonDetail, loading: loadingDetail} = useGetPersonDetail();
 
-  const {
-    getPersonMovies: getMovies,
-    data: dataPersonMovie,
-    loading: loadingMovies,
-  } = useGetPersonMovies();
+  const {getPersonMovies: getMovies, loading: loadingMovies} =
+    useGetPersonMovies();
 
-  const getPersonDetails = async (id: string) => {
-    await getPersonDetail({
-      url: `/person/${id}?api_key=${API_KEY}`,
-    });
+  const getPersonDetails = async () => {
+    try {
+      const res = await getPersonDetail({
+        url: `/person/${item.id}?api_key=${API_KEY}`,
+      });
+      if (res) {
+        console.log(res.data, 'detail');
+        setDetails(res.data);
+      }
+    } catch (e) {
+      setErrorEp(true);
+    }
+    setLoading(false);
   };
 
-  const getPersonMovies = async (id: string) => {
-    await getMovies({
-      url: `/person/${id}/movie_credits?api_key=${API_KEY}`,
-    });
+  const getPersonMovies = async () => {
+    try {
+      const res = await getMovies({
+        url: `/person/${item.id}/movie_credits?api_key=${API_KEY}`,
+      });
+      if (res) {
+        setMovies(res.data.results);
+      }
+    } catch (e) {
+      setErrorEp(true);
+    }
+
     setLoading(false);
   };
 
   useEffect(() => {
     setLoading(true);
-    getPersonDetails(item?.id);
-    getPersonMovies(item?.id);
+    getPersonDetails();
+    getPersonMovies();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [item]);
 
@@ -76,12 +92,6 @@ const PersonScreen: React.FC = () => {
           className="rounded-xl p-1"
           onPress={() => navigation.goBack()}>
           <ChevronLeftIcon size={28} strokeWidth={2.5} color={'white'} />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => toggleFavorite(!isFavorite)}>
-          <HeartIcon
-            size={35}
-            color={isFavorite ? theme.background : 'white'}
-          />
         </TouchableOpacity>
       </SafeAreaView>
 
@@ -102,8 +112,7 @@ const PersonScreen: React.FC = () => {
               <Image
                 // source={require('../assets/images/castImage2.png')}
                 source={{
-                  uri:
-                    image342(dataPerson?.profile_path) || fallbackPersonImage,
+                  uri: image342(details?.profile_path) || fallbackPersonImage,
                 }}
                 style={{height: height * 0.43, width: width * 0.74}}
               />
@@ -113,10 +122,10 @@ const PersonScreen: React.FC = () => {
           <View className="mt-6">
             <Text className="text-3xl text-white font-bold text-center">
               {/* Keanu Reeves */}
-              {dataPerson?.name}
+              {details?.name}
             </Text>
             <Text className="text-neutral-500 text-base text-center">
-              {dataPerson?.place_of_birth}
+              {details?.place_of_birth}
               {/* Beirut, Lebanon */}
             </Text>
           </View>
@@ -126,28 +135,28 @@ const PersonScreen: React.FC = () => {
               <Text className="text-white font-semibold ">Gender</Text>
               <Text className="text-neutral-300 text-sm">
                 {/* Male */}
-                {dataPerson?.gender == 1 ? 'Female' : 'Male'}
+                {details?.gender == 1 ? 'Female' : 'Male'}
               </Text>
             </View>
             <View className="border-r-2 border-r-neutral-400 px-2 items-center">
               <Text className="text-white font-semibold">Birthday</Text>
               <Text className="text-neutral-300 text-sm">
                 {/* 1964-09-02 */}
-                {dataPerson?.birthday}
+                {details?.birthday}
               </Text>
             </View>
             <View className="border-r-2 border-r-neutral-400 px-2 items-center">
               <Text className="text-white font-semibold">known for</Text>
               <Text className="text-neutral-300 text-sm">
                 {/* Acting */}
-                {dataPerson?.known_for_department}
+                {details?.known_for_department}
               </Text>
             </View>
             <View className="px-2 items-center">
               <Text className="text-white font-semibold">Popularity</Text>
               <Text className="text-neutral-300 text-sm">
                 {/* 84.23 % , we want 2 digits after the decimal point so use toFixed(2) */}
-                {dataPerson?.popularity?.toFixed(2)} %
+                {details?.popularity?.toFixed(2)} %
               </Text>
             </View>
           </View>
@@ -155,16 +164,18 @@ const PersonScreen: React.FC = () => {
           <View className="my-6 mx-4 space-y-2">
             <Text className="text-white text-lg">Biography</Text>
             <Text className="text-neutral-400 tracking-wide">
-              {dataPerson?.biography || 'N/A'}
+              {details?.biography || 'N/A'}
             </Text>
           </View>
 
-          {/* person movies */}
-          <MovieList
-            title={'Movies'}
-            hideSeeAll={true}
-            data={dataPersonMovie}
-          />
+          {movies?.length > 0 && (
+            <MovieList title={'Movies'} hideSeeAll={true} data={movies} />
+          )}
+        </View>
+      )}
+      {errorEp && (
+        <View>
+          <Text>There was en errant error getting the entertainment</Text>
         </View>
       )}
     </ScrollView>

@@ -58,7 +58,6 @@ const MovieScreen: React.FC = () => {
     try {
       const res = await getMovieDetail();
       if (res) {
-        console.log(res.data, 'detail');
         setDetail(res.data);
       }
     } catch (e) {
@@ -85,7 +84,6 @@ const MovieScreen: React.FC = () => {
     try {
       const res = await getMovieSimilar();
       if (res) {
-        console.log(res.data.results, 'similar');
         setSimilar(res.data.results);
       }
     } catch (e) {
@@ -124,51 +122,29 @@ const MovieScreen: React.FC = () => {
           </TouchableOpacity>
         </SafeAreaView>
 
-        {loading || loadingDetail || loadingCredits || loadingSimilar ? (
-          <>
-            <Loading />
-
-            <View>
-              <Image
-                source={{
-                  uri: image500(detail?.poster_path!) ?? fallbackMoviePoster,
-                }}
-                style={{width, height: height * 0.55}}
-              />
-              <LinearGradient
-                colors={[
-                  'transparent',
-                  'rgba(23, 23, 23, 0.8)',
-                  'rgba(23, 23, 23, 1)',
-                ]}
-                style={{width, height: height * 0.4}}
-                start={{x: 0.5, y: 0}}
-                end={{x: 0.5, y: 1}}
-                className="absolute bottom-0"
-              />
-            </View>
-          </>
-        ) : (
-          <View>
-            <Image
-              source={{
-                uri: image500(detail?.poster_path!) ?? fallbackMoviePoster,
-              }}
-              style={{width, height: height * 0.55}}
-            />
-            <LinearGradient
-              colors={[
-                'transparent',
-                'rgba(23, 23, 23, 0.8)',
-                'rgba(23, 23, 23, 1)',
-              ]}
-              style={{width, height: height * 0.4}}
-              start={{x: 0.5, y: 0}}
-              end={{x: 0.5, y: 1}}
-              className="absolute bottom-0"
-            />
-          </View>
-        )}
+        {loading ||
+          loadingDetail ||
+          loadingCredits ||
+          (loadingSimilar && <Loading />)}
+        <View>
+          <Image
+            source={{
+              uri: image500(detail?.poster_path!) ?? fallbackMoviePoster,
+            }}
+            style={{width, height: height * 0.55}}
+          />
+          <LinearGradient
+            colors={[
+              'transparent',
+              'rgba(23, 23, 23, 0.8)',
+              'rgba(23, 23, 23, 1)',
+            ]}
+            style={{width, height: height * 0.4}}
+            start={{x: 0.5, y: 0}}
+            end={{x: 0.5, y: 1}}
+            className="absolute bottom-0"
+          />
+        </View>
       </View>
 
       {/* movie details */}
