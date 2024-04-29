@@ -10,10 +10,8 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useRoute, useNavigation} from '@react-navigation/native';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import {ChevronLeftIcon} from 'react-native-heroicons/outline';
-import {HeartIcon} from 'react-native-heroicons/solid';
-import {styles, theme} from '../../theme';
+import {styles} from '../../theme';
 import {fallbackPersonImage, image342} from '../../services/constants';
 import useGetPersonDetail from '../../services/Person/useGetPersonDetail';
 import {API_KEY} from '../../config/environment';
@@ -21,7 +19,7 @@ import {Loading} from '../../components/Loading';
 import {MovieList} from '../../components/MovieList';
 import useGetPersonMovies from '../../services/Person/useGetPersonMovies';
 import {IMovieDetail} from '../MovieScreen/types';
-import {PersonDetailsRouteProp} from './types';
+import {IMovieDetailed, PersonDetailsRouteProp} from './types';
 
 let {width, height} = Dimensions.get('window');
 const ios = Platform.OS == 'ios';
@@ -31,7 +29,7 @@ const PersonScreen: React.FC = () => {
   const {params} = useRoute<PersonDetailsRouteProp>();
   const item = params;
   const navigation = useNavigation();
-  const [details, setDetails] = useState<any>();
+  const [details, setDetails] = useState<IMovieDetailed>();
   const [movies, setMovies] = useState<IMovieDetail[]>([]);
 
   const [errorEp, setErrorEp] = useState<boolean>(false);
@@ -109,7 +107,6 @@ const PersonScreen: React.FC = () => {
             }}>
             <View className="items-center rounded-full overflow-hidden h-72 w-72 border-neutral-500 border-2">
               <Image
-                // source={require('../assets/images/castImage2.png')}
                 source={{
                   uri: image342(details?.profile_path) || fallbackPersonImage,
                 }}

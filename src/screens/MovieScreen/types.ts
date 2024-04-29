@@ -1,4 +1,5 @@
 import {RouteProp} from '@react-navigation/native';
+import {RootStackParamList} from '../../navigation/types';
 
 export interface IMovieDetail {
   adult: boolean;
@@ -17,10 +18,6 @@ export interface IMovieDetail {
   vote_average: number;
   vote_count: number;
 }
-
-export type RootStackParamList = {
-  Movie: IMovieDetail;
-};
 
 export type MovieDetailsRouteProp = RouteProp<RootStackParamList, 'Movie'>;
 
