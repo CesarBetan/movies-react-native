@@ -9,50 +9,57 @@ import {
   Image,
 } from 'react-native';
 import React, {useCallback, useState} from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import {XMarkIcon} from 'react-native-heroicons/outline';
 import {debounce} from 'lodash';
 import {useNavigation} from '@react-navigation/native';
 import {fallbackMoviePoster, image185} from '../../services/constants';
 import {Loading} from '../../components/Loading';
+import useGetSearchMovies from '../../services/MoviesLists/useGetSearchMovies';
+import {API_KEY} from '../../config/environment';
+import {IMovieDetail} from '../MovieScreen/types';
 
 let {width, height} = Dimensions.get('window');
 
 const SearchScreen: React.FC = () => {
   const navigation = useNavigation();
-  const [results, setResults] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [results, setResults] = useState<IMovieDetail[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [errorEp, setErrorEp] = useState<boolean>(false);
 
-  const handleSearch = value => {
-    if (value && value.length > 2) {
-      setLoading(true);
-      searchMovies({
-        query: value,
-        include_adult: 'false',
-        language: 'en-US',
-        page: '1',
-      }).then(data => {
-        if (data && data.results) {
-          setResults(data.results);
+  const {searchMovies, loading: loadingSearch} = useGetSearchMovies();
+
+  const handleSearch = async (value: string) => {
+    setLoading(true);
+    try {
+      if (value.length > 0) {
+        const res = await searchMovies({
+          url: `/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(
+            value,
+          )}&include_adult=true&page=1&language=en-US`,
+        });
+        if (res) {
+          setResults(res.data.results);
         }
-        setLoading(false);
-      });
-    } else {
-      setLoading(false);
-      setResults([]);
+      } else {
+        setResults([]);
+      }
+    } catch (e) {
+      setErrorEp(true);
     }
+
+    setLoading(false);
   };
 
   const handleTextDebounce = useCallback(debounce(handleSearch, 400), []);
 
   return (
-    <SafeAreaView className="bg-neutral-800 flex-1">
-      <View className="mx-4 mb-3 flex-row justify-between items-center border border-neutral-500 rounded-full">
+    <View className="bg-neutral-800 flex-1 py-6">
+      <View className="mx-4 my-2 flex-row justify-between items-center border border-neutral-500 rounded-full">
         <TextInput
           onChangeText={handleTextDebounce}
-          placeholder="Search Movie"
+          placeholder="Search Movie..."
           placeholderTextColor={'lightgray'}
-          className="pb-1 pl-6 flex-1 text-base font-semibold text-white tracking-wider"
+          className="py-1 pl-6 flex-1 text-base font-semibold text-white tracking-wider"
         />
         <TouchableOpacity
           onPress={() => navigation.navigate('Home')}
@@ -62,14 +69,14 @@ const SearchScreen: React.FC = () => {
       </View>
 
       {/* results */}
-      {loading ? (
+      {loading || loadingSearch ? (
         <Loading />
       ) : results.length > 0 ? (
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{paddingHorizontal: 15}}
           className="space-y-3">
-          <Text className="text-white font-semibold ml-1">
+          <Text className="my-2 text-white font-semibold ml-1">
             Results ({results.length})
           </Text>
           <View className="flex-row justify-between flex-wrap">
@@ -104,11 +111,16 @@ const SearchScreen: React.FC = () => {
             className="h-96 w-96"
           />
           <Text className="text-neutral-400 text-xl">
-            Explore the world of cinema!
+            Explore the movie data base (TMDB)!
           </Text>
         </View>
       )}
-    </SafeAreaView>
+      {errorEp && (
+        <View>
+          <Text>There was en errant error getting the entertainment</Text>
+        </View>
+      )}
+    </View>
   );
 };
 
