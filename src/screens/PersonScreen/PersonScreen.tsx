@@ -18,7 +18,7 @@ import {fallbackPersonImage, image342} from '../../services/constants';
 import useGetPersonDetail from '../../services/Person/useGetPersonDetail';
 import {API_KEY} from '../../config/environment';
 import Loading from '../../components/Loading';
-import MovieList from '../../components/MovieList';
+import {MovieList} from '../../components/MovieList';
 import useGetPersonMovies from '../../services/Person/useGetPersonMovies';
 
 let {width, height} = Dimensions.get('window');

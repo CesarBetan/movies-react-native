@@ -19,7 +19,7 @@ import useGetMovieCredits from '../../services/Movie/useGetMovieCredits';
 import useGetMovieSimilar from '../../services/Movie/useGetMovieSimilar';
 import Loading from '../../components/Loading';
 import Cast from '../../components/Cast';
-import MovieList from '../../components/MovieList';
+import {MovieList} from '../../components/MovieList';
 import {LinearGradient} from 'react-native-linear-gradient';
 import {
   Genre,

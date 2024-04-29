@@ -8,18 +8,19 @@ import {
   Dimensions,
 } from 'react-native';
 import React from 'react';
-import {styles} from '../theme';
+import {styles} from '../../theme';
 import {useNavigation} from '@react-navigation/native';
-import {fallbackMoviePoster, image185} from '../services/constants';
+import {fallbackMoviePoster, image185} from '../../services/constants';
+import {IMovieList} from './types';
 
 let {width, height} = Dimensions.get('window');
 
-const MovieList: React.FC<any> = ({title, hideSeeAll, data}) => {
+const MovieList: React.FC<IMovieList> = ({title, hideSeeAll, data}) => {
   const navigation = useNavigation();
 
   return (
     <View className="mb-8 space-y-4">
-      <View className="mx-4 flex-row justify-between items-center">
+      <View className="mx-4 mb-2 flex-row justify-between items-center">
         <Text className="text-white text-xl">{title}</Text>
         {!hideSeeAll && (
           <TouchableOpacity>
@@ -43,7 +44,7 @@ const MovieList: React.FC<any> = ({title, hideSeeAll, data}) => {
               <Image
                 // source={require('../assets/images/moviePoster2.png')}
                 source={{
-                  uri: image185(item.poster_path) || fallbackMoviePoster,
+                  uri: image185(item.poster_path) ?? fallbackMoviePoster,
                 }}
                 className="rounded-3xl"
                 style={{

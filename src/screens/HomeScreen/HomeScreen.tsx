@@ -7,27 +7,24 @@ import {
   ScrollView,
   StatusBar,
 } from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {
-  Bars3CenterLeftIcon,
-  MagnifyingGlassIcon,
-} from 'react-native-heroicons/outline';
+import {MagnifyingGlassIcon} from 'react-native-heroicons/outline';
 import {styles} from '../../theme/index';
 import {useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import MovieList from '../../components/MovieList';
 import Loading from '../../components/Loading';
 import useGetTrending from '../../services/MoviesLists/useGetTrending';
 import TrendingMovies from '../../components/TrendingMovies';
 import useGetTopRated from '../../services/MoviesLists/useGetTopRated';
 import useGetUpcoming from '../../services/MoviesLists/useGetUpcoming';
+import {IMovieDetail} from '../MovieScreen/types';
+import {MovieList} from '../../components/MovieList';
 
 const ios = Platform.OS == 'ios';
 const HomeScreen: React.FC = () => {
   const navigation = useNavigation();
-  const [trending, setTrending] = useState<any>();
-  const [upcoming, setUpcoming] = useState<any>();
-  const [topRated, setTopRated] = useState<any>();
+  const [trending, setTrending] = useState<IMovieDetail[]>([]);
+  const [upcoming, setUpcoming] = useState<IMovieDetail[]>([]);
+  const [topRated, setTopRated] = useState<IMovieDetail[]>([]);
 
   const [errorEp, setErrorEp] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
@@ -85,11 +82,9 @@ const HomeScreen: React.FC = () => {
 
   return (
     <View className="flex-1 bg-neutral-800">
-      <SafeAreaView className={ios ? '-mb-2' : 'mb-3'}>
-        <StatusBar light-content />
-        <View className="flex-row justify-between items-center mx-4">
-          <Bars3CenterLeftIcon size={'30'} strokeWidth={2} color="white" />
-
+      <View className={ios ? '-mb-2' : 'mb-4'}>
+        <StatusBar dark-content />
+        <View className="mt-4 flex-row justify-between items-center mx-4">
           <Text className="text-white text-3xl font-bold">
             <Text style={styles.text}>Movies</Text> DB
           </Text>
@@ -98,7 +93,7 @@ const HomeScreen: React.FC = () => {
             <MagnifyingGlassIcon size={30} strokeWidth={2} color="white" />
           </TouchableOpacity>
         </View>
-      </SafeAreaView>
+      </View>
 
       {loading || loadingTrending || loadingTopRated || loadingUpcoming ? (
         <Loading />
