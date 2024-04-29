@@ -38,7 +38,6 @@ const MovieScreen: React.FC = () => {
   const item = params;
   const navigation = useNavigation();
 
-  const [isFavorite, toggleFavorite] = useState(false);
   const [detail, setDetail] = useState<IDetail>();
   const [credits, setCredits] = useState<ICast[]>([]);
   const [similar, setSimilar] = useState<IMovieDetail[]>([]);
@@ -103,9 +102,9 @@ const MovieScreen: React.FC = () => {
     <ScrollView className="flex-1 bg-neutral-900 pb-6">
       {/* back button and movie poster */}
       <View className="w-full">
-        <SafeAreaView
+        <View
           className={
-            'absolute z-20 w-full flex-row  justify-between items-center px-4' +
+            'absolute z-20 w-full flex-row justify-between items-center px-4' +
             topMargin
           }>
           <TouchableOpacity
@@ -114,13 +113,7 @@ const MovieScreen: React.FC = () => {
             onPress={() => navigation.goBack()}>
             <ChevronLeftIcon size={28} strokeWidth={2.5} color={'white'} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => toggleFavorite(!isFavorite)}>
-            <HeartIcon
-              size={35}
-              color={isFavorite ? theme.background : 'white'}
-            />
-          </TouchableOpacity>
-        </SafeAreaView>
+        </View>
 
         {loading ||
           loadingDetail ||

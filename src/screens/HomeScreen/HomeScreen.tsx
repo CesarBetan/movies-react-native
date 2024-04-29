@@ -101,10 +101,10 @@ const HomeScreen: React.FC = () => {
         <ScrollView showsVerticalScrollIndicator={false} className="mb-6">
           {trending?.length > 0 && <TrendingMovies data={trending} />}
           {upcoming?.length > 0 && (
-            <MovieList title="Upcoming" data={upcoming} hideSeeAll={false} />
+            <MovieList title="Upcoming" data={upcoming} hideSeeAll={true} />
           )}
           {topRated?.length > 0 && (
-            <MovieList title="Top rated" data={topRated} hideSeeAll={false} />
+            <MovieList title="Top rated" data={topRated} hideSeeAll={true} />
           )}
         </ScrollView>
       )}

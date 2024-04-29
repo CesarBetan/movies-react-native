@@ -82,7 +82,7 @@ const PersonScreen: React.FC = () => {
     <ScrollView
       className="flex-1 bg-neutral-900"
       contentContainerStyle={{paddingBottom: 20}}>
-      <SafeAreaView
+      <View
         className={
           'flex-row justify-between items-center mx-4 z-10 ' + topMargin
         }>
@@ -92,7 +92,7 @@ const PersonScreen: React.FC = () => {
           onPress={() => navigation.goBack()}>
           <ChevronLeftIcon size={28} strokeWidth={2.5} color={'white'} />
         </TouchableOpacity>
-      </SafeAreaView>
+      </View>
 
       {/* person details */}
       {loading || loadingDetail || loadingMovies ? (
