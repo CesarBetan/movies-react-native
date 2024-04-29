@@ -17,8 +17,8 @@ import {fallbackMoviePoster, image500} from '../../services/constants';
 import useGetMovieDetail from '../../services/Movie/useGetMovieDetails';
 import useGetMovieCredits from '../../services/Movie/useGetMovieCredits';
 import useGetMovieSimilar from '../../services/Movie/useGetMovieSimilar';
-import Loading from '../../components/Loading';
-import Cast from '../../components/Cast';
+import {Loading} from '../../components/Loading';
+import {Cast} from '../../components/Cast';
 import {MovieList} from '../../components/MovieList';
 import {LinearGradient} from 'react-native-linear-gradient';
 import {
@@ -38,7 +38,7 @@ const MovieScreen: React.FC = () => {
   const item = params;
   const navigation = useNavigation();
 
-  const [isFavourite, toggleFavourite] = useState(false);
+  const [isFavorite, toggleFavorite] = useState(false);
   const [detail, setDetail] = useState<IDetail>();
   const [credits, setCredits] = useState<ICast[]>([]);
   const [similar, setSimilar] = useState<IMovieDetail[]>([]);
@@ -116,10 +116,10 @@ const MovieScreen: React.FC = () => {
             onPress={() => navigation.goBack()}>
             <ChevronLeftIcon size={28} strokeWidth={2.5} color={'white'} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => toggleFavourite(!isFavourite)}>
+          <TouchableOpacity onPress={() => toggleFavorite(!isFavorite)}>
             <HeartIcon
               size={35}
-              color={isFavourite ? theme.background : 'white'}
+              color={isFavorite ? theme.background : 'white'}
             />
           </TouchableOpacity>
         </SafeAreaView>
@@ -185,7 +185,6 @@ const MovieScreen: React.FC = () => {
           </Text>
         ) : null}
 
-        {/* genres  */}
         <View className="flex-row justify-center mx-4 space-x-2">
           {detail?.genres?.map((genre: Genre) => {
             let showDot = genre.id + 1 != detail.genres.length;
@@ -199,19 +198,15 @@ const MovieScreen: React.FC = () => {
           })}
         </View>
 
-        {/* description */}
         <Text className="text-neutral-400 mx-4 tracking-wide">
           {detail?.overview}
         </Text>
       </View>
 
       {credits?.length > 0 && <Cast navigation={navigation} cast={credits} />}
-
-      {/*similar movies  */}
       {similar?.length > 0 && (
         <MovieList title="Similar Movies" hideSeeAll={true} data={similar} />
       )}
-
       {errorEp && (
         <View>
           <Text>There was en errant error getting the entertainment</Text>

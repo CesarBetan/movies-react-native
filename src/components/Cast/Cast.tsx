@@ -1,9 +1,8 @@
 import {View, Text, ScrollView, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
-import {fallbackPersonImage, image185} from '../services/constants';
+import {fallbackPersonImage, image185} from '../../services/constants';
 
 const Cast: React.FC<any> = ({navigation, cast}) => {
-  console.log(cast, 'cast');
   return (
     <View className="my-6">
       <Text className="text-white text-lg mx-4 mb-5">Top Cast</Text>

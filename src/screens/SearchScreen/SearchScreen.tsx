@@ -14,7 +14,7 @@ import {XMarkIcon} from 'react-native-heroicons/outline';
 import {debounce} from 'lodash';
 import {useNavigation} from '@react-navigation/native';
 import {fallbackMoviePoster, image185} from '../../services/constants';
-import Loading from '../../components/Loading';
+import {Loading} from '../../components/Loading';
 
 let {width, height} = Dimensions.get('window');
 

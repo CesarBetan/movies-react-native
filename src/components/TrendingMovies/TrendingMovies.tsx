@@ -8,7 +8,7 @@ import {
 import React from 'react';
 import Carousel from 'react-native-snap-carousel';
 import {useNavigation} from '@react-navigation/native';
-import {image500} from '../services/constants';
+import {image500} from '../../services/constants';
 
 let {width, height} = Dimensions.get('window');
 

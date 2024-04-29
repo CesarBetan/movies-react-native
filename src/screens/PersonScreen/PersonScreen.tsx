@@ -17,7 +17,7 @@ import {styles, theme} from '../../theme';
 import {fallbackPersonImage, image342} from '../../services/constants';
 import useGetPersonDetail from '../../services/Person/useGetPersonDetail';
 import {API_KEY} from '../../config/environment';
-import Loading from '../../components/Loading';
+import {Loading} from '../../components/Loading';
 import {MovieList} from '../../components/MovieList';
 import useGetPersonMovies from '../../services/Person/useGetPersonMovies';
 
@@ -28,7 +28,7 @@ const topMargin = ios ? '' : ' my-3';
 const PersonScreen: React.FC = () => {
   const {params: item} = useRoute();
   const navigation = useNavigation();
-  const [isFavourite, toggleFavourite] = useState(false);
+  const [isFavorite, toggleFavorite] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const {
@@ -77,10 +77,10 @@ const PersonScreen: React.FC = () => {
           onPress={() => navigation.goBack()}>
           <ChevronLeftIcon size={28} strokeWidth={2.5} color={'white'} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => toggleFavourite(!isFavourite)}>
+        <TouchableOpacity onPress={() => toggleFavorite(!isFavorite)}>
           <HeartIcon
             size={35}
-            color={isFavourite ? theme.background : 'white'}
+            color={isFavorite ? theme.background : 'white'}
           />
         </TouchableOpacity>
       </SafeAreaView>
