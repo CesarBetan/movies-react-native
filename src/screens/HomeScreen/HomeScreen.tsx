@@ -29,6 +29,7 @@ const HomeScreen: React.FC = () => {
   const [upcoming, setUpcoming] = useState<any>();
   const [topRated, setTopRated] = useState<any>();
 
+  const [errorEp, setErrorEp] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
 
   const {getTrending, loading: loadingTrending} = useGetTrending();
@@ -37,27 +38,40 @@ const HomeScreen: React.FC = () => {
 
   const getTrendingMovies = async () => {
     setLoading(true);
-    const res = await getTrending();
-    if (res) {
-      setTrending(res.data.results);
+    try {
+      const res = await getTrending();
+      if (res) {
+        setTrending(res.data.results);
+      }
+    } catch (e) {
+      setErrorEp(true);
     }
+
     setLoading(false);
   };
 
   const getUpcomingMovies = async () => {
     setLoading(true);
-    const res = await getUpcoming();
-    if (res) {
-      setUpcoming(res.data.results);
+    try {
+      const res = await getUpcoming();
+      if (res) {
+        setUpcoming(res.data.results);
+      }
+    } catch (e) {
+      setErrorEp(true);
     }
     setLoading(false);
   };
 
   const getTopRatedMovies = async () => {
     setLoading(true);
-    const res = await getTopRated();
-    if (res) {
-      setTopRated(res.data.results);
+    try {
+      const res = await getTopRated();
+      if (res) {
+        setTopRated(res.data.results);
+      }
+    } catch (e) {
+      setErrorEp(true);
     }
     setLoading(false);
   };
@@ -77,7 +91,7 @@ const HomeScreen: React.FC = () => {
           <Bars3CenterLeftIcon size={'30'} strokeWidth={2} color="white" />
 
           <Text className="text-white text-3xl font-bold">
-            <Text style={styles.text}>M</Text>ovies
+            <Text style={styles.text}>Movies</Text> DB
           </Text>
 
           <TouchableOpacity onPress={() => navigation.navigate('Search')}>
@@ -89,9 +103,7 @@ const HomeScreen: React.FC = () => {
       {loading || loadingTrending || loadingTopRated || loadingUpcoming ? (
         <Loading />
       ) : (
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{paddingBottom: 10}}>
+        <ScrollView showsVerticalScrollIndicator={false} className="mb-6">
           {trending?.length > 0 && <TrendingMovies data={trending} />}
           {upcoming?.length > 0 && (
             <MovieList title="Upcoming" data={upcoming} hideSeeAll={false} />
@@ -100,6 +112,11 @@ const HomeScreen: React.FC = () => {
             <MovieList title="Top rated" data={topRated} hideSeeAll={false} />
           )}
         </ScrollView>
+      )}
+      {errorEp && (
+        <View>
+          <Text>There was en errant error getting the entertainment</Text>
+        </View>
       )}
     </View>
   );
