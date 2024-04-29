@@ -20,65 +20,89 @@ import useGetMovieSimilar from '../../services/Movie/useGetMovieSimilar';
 import Loading from '../../components/Loading';
 import Cast from '../../components/Cast';
 import MovieList from '../../components/MovieList';
-import {LinearGradient} from 'react-native-svg';
+import {LinearGradient} from 'react-native-linear-gradient';
+import {
+  Genre,
+  ICast,
+  IDetail,
+  IMovieDetail,
+  MovieDetailsRouteProp,
+} from './types';
 
 let {width, height} = Dimensions.get('window');
 const ios = Platform.OS == 'ios';
 const topMargin = ios ? '' : ' mt-4';
 
 const MovieScreen: React.FC = () => {
-  const {params: item} = useRoute();
-  const [isFavourite, toggleFavourite] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const {params} = useRoute<MovieDetailsRouteProp>();
+  const item = params;
   const navigation = useNavigation();
 
-  const {
-    getMovieDetail,
-    data: dataDetail,
-    loading: loadingDetail,
-  } = useGetMovieDetail();
+  const [isFavourite, toggleFavourite] = useState(false);
+  const [detail, setDetail] = useState<IDetail>();
+  const [credits, setCredits] = useState<ICast[]>([]);
+  const [similar, setSimilar] = useState<IMovieDetail[]>([]);
 
-  const {
-    getMovieCredits: getMovieC,
-    data: dataCredits,
-    loading: loadingCredits,
-  } = useGetMovieCredits();
+  const [errorEp, setErrorEp] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
 
-  const {
-    getMovieSimilar,
-    data: dataSimilar,
-    loading: loadingSimilar,
-  } = useGetMovieSimilar();
+  const {getMovieDetail, loading: loadingDetail} = useGetMovieDetail(item.id);
+  const {getMovieCredits: getMovieC, loading: loadingCredits} =
+    useGetMovieCredits(item?.id);
+  const {getMovieSimilar, loading: loadingSimilar} = useGetMovieSimilar(
+    item.id,
+  );
 
   const getMovieDetails = async () => {
     setLoading(true);
-    await getMovieDetail();
+    try {
+      const res = await getMovieDetail();
+      if (res) {
+        console.log(res.data, 'detail');
+        setDetail(res.data);
+      }
+    } catch (e) {
+      setErrorEp(true);
+    }
     setLoading(false);
   };
 
   const getMovieCredits = async () => {
     setLoading(true);
-    await getMovieC();
+    try {
+      const res = await getMovieC();
+      if (res) {
+        setCredits(res.data.cast);
+      }
+    } catch (e) {
+      setErrorEp(true);
+    }
     setLoading(false);
   };
 
   const getSimilarMovies = async () => {
     setLoading(true);
-    await getMovieSimilar();
+    try {
+      const res = await getMovieSimilar();
+      if (res) {
+        console.log(res.data.results, 'similar');
+        setSimilar(res.data.results);
+      }
+    } catch (e) {
+      setErrorEp(true);
+    }
     setLoading(false);
   };
 
   useEffect(() => {
-    getMovieDetails(item?.id);
-    getMovieCredits(item?.id);
-    getSimilarMovies(item?.id);
+    getMovieDetails();
+    getMovieCredits();
+    getSimilarMovies();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [item]);
+  }, []);
 
   return (
-    <ScrollView
-      contentContainerStyle={{paddingBottom: 20}}
-      className="flex-1 bg-neutral-900">
+    <ScrollView className="flex-1 bg-neutral-900 pb-6">
       {/* back button and movie poster */}
       <View className="w-full">
         <SafeAreaView
@@ -101,13 +125,34 @@ const MovieScreen: React.FC = () => {
         </SafeAreaView>
 
         {loading || loadingDetail || loadingCredits || loadingSimilar ? (
-          <Loading />
+          <>
+            <Loading />
+
+            <View>
+              <Image
+                source={{
+                  uri: image500(detail?.poster_path!) ?? fallbackMoviePoster,
+                }}
+                style={{width, height: height * 0.55}}
+              />
+              <LinearGradient
+                colors={[
+                  'transparent',
+                  'rgba(23, 23, 23, 0.8)',
+                  'rgba(23, 23, 23, 1)',
+                ]}
+                style={{width, height: height * 0.4}}
+                start={{x: 0.5, y: 0}}
+                end={{x: 0.5, y: 1}}
+                className="absolute bottom-0"
+              />
+            </View>
+          </>
         ) : (
           <View>
             <Image
-              // source={require('../assets/images/moviePoster2.png')}
               source={{
-                uri: image500(dataDetail?.poster_path) || fallbackMoviePoster,
+                uri: image500(detail?.poster_path!) ?? fallbackMoviePoster,
               }}
               style={{width, height: height * 0.55}}
             />
@@ -130,24 +175,23 @@ const MovieScreen: React.FC = () => {
       <View style={{marginTop: -(height * 0.09)}} className="space-y-3">
         {/* title */}
         <Text className="text-white text-center text-3xl font-bold tracking-wider">
-          {dataDetail?.title}
+          {detail?.title}
         </Text>
         {/* status, release , runtime */}
-        {dataDetail?.id ? (
+        {detail?.id ? (
           <Text className="text-neutral-400 font-semibold text-base text-center">
-            {dataDetail?.status} •{' '}
-            {dataDetail?.release_date?.split('-')[0] || 'N/A'} •{' '}
-            {dataDetail?.runtime} min
+            {detail?.status} • {detail?.release_date?.split('-')[0] || 'N/A'} •{' '}
+            {detail?.runtime} min
           </Text>
         ) : null}
 
         {/* genres  */}
         <View className="flex-row justify-center mx-4 space-x-2">
-          {dataDetail?.genres?.map((genre, index) => {
-            let showDot = index + 1 != dataDetail.genres.length;
+          {detail?.genres?.map((genre: Genre) => {
+            let showDot = genre.id + 1 != detail.genres.length;
             return (
               <Text
-                key={index}
+                key={genre.id}
                 className="text-neutral-400 font-semibold text-base text-center">
                 {genre?.name} {showDot ? '•' : null}
               </Text>
@@ -157,21 +201,21 @@ const MovieScreen: React.FC = () => {
 
         {/* description */}
         <Text className="text-neutral-400 mx-4 tracking-wide">
-          {dataDetail?.overview}
+          {detail?.overview}
         </Text>
       </View>
 
-      {dataCredits.length > 0 && (
-        <Cast navigation={navigation} cast={dataCredits} />
-      )}
+      {credits?.length > 0 && <Cast navigation={navigation} cast={credits} />}
 
       {/*similar movies  */}
-      {dataSimilar.length > 0 && (
-        <MovieList
-          title="Similar Movies"
-          hideSeeAll={true}
-          data={dataSimilar}
-        />
+      {similar?.length > 0 && (
+        <MovieList title="Similar Movies" hideSeeAll={true} data={similar} />
+      )}
+
+      {errorEp && (
+        <View>
+          <Text>There was en errant error getting the entertainment</Text>
+        </View>
       )}
     </ScrollView>
   );
