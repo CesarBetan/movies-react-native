@@ -1,0 +1,4 @@
+{
+  "releaseTypes": ["FIXES", "MINOR", "MAJOR"],
+  "releaseType": "MINOR"
+}
