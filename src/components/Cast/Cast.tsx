@@ -4,10 +4,10 @@ import {fallbackPersonImage, image185} from '../../services/constants';
 import {ICastComponent} from './types';
 import {useNavigation} from '@react-navigation/native';
 
-const Cast: React.FC<ICastComponent> = ({cast}) => {
+const Cast: React.FC<ICastComponent> = ({cast, testID}) => {
   const navigation = useNavigation();
   return (
-    <View className="my-6">
+    <View className="my-6" testID={testID}>
       <Text className="text-white text-lg mx-4 mb-5">Top Cast</Text>
       <ScrollView
         horizontal

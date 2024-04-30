@@ -99,7 +99,7 @@ const MovieScreen: React.FC = () => {
   }, []);
 
   return (
-    <ScrollView className="flex-1 bg-neutral-900 pb-6">
+    <ScrollView testID="movie-screen" className="flex-1 bg-neutral-900 pb-6">
       {/* back button and movie poster */}
       <View className="w-full">
         <View
@@ -110,7 +110,8 @@ const MovieScreen: React.FC = () => {
           <TouchableOpacity
             style={styles.background}
             className="rounded-xl p-1"
-            onPress={() => navigation.goBack()}>
+            onPress={() => navigation.goBack()}
+            testID="btn-go-back">
             <ChevronLeftIcon size={28} strokeWidth={2.5} color={'white'} />
           </TouchableOpacity>
         </View>
@@ -118,13 +119,14 @@ const MovieScreen: React.FC = () => {
         {loading ||
           loadingDetail ||
           loadingCredits ||
-          (loadingSimilar && <Loading />)}
+          (loadingSimilar && <Loading testID="loading-indicator" />)}
         <View>
           <Image
             source={{
               uri: image500(detail?.poster_path!) ?? fallbackMoviePoster,
             }}
             style={{width, height: height * 0.55}}
+            testID="img-movie"
           />
           <LinearGradient
             colors={[
@@ -143,12 +145,16 @@ const MovieScreen: React.FC = () => {
       {/* movie details */}
       <View style={{marginTop: -(height * 0.09)}} className="space-y-3">
         {/* title */}
-        <Text className="text-white text-center text-3xl font-bold tracking-wider">
+        <Text
+          className="text-white text-center text-3xl font-bold tracking-wider"
+          testID="txt-title">
           {detail?.title}
         </Text>
         {/* status, release , runtime */}
         {detail?.id ? (
-          <Text className="text-neutral-400 font-semibold text-base text-center">
+          <Text
+            className="text-neutral-400 font-semibold text-base text-center"
+            testID="txt-status">
             {detail?.status} • {detail?.release_date?.split('-')[0] || 'N/A'} •{' '}
             {detail?.runtime} min
           </Text>
@@ -160,24 +166,32 @@ const MovieScreen: React.FC = () => {
             return (
               <Text
                 key={genre.id}
-                className="text-neutral-400 font-semibold text-base text-center">
+                className="text-neutral-400 font-semibold text-base text-center"
+                testID="txt-genre">
                 {genre?.name} {showDot ? '•' : null}
               </Text>
             );
           })}
         </View>
 
-        <Text className="text-neutral-400 mx-4 tracking-wide">
+        <Text
+          className="text-neutral-400 mx-4 tracking-wide"
+          testID="txt-overview">
           {detail?.overview}
         </Text>
       </View>
 
-      {credits?.length > 0 && <Cast navigation={navigation} cast={credits} />}
+      {credits?.length > 0 && <Cast cast={credits} testID="movie-cast" />}
       {similar?.length > 0 && (
-        <MovieList title="Similar Movies" hideSeeAll={true} data={similar} />
+        <MovieList
+          title="Similar Movies"
+          hideSeeAll={true}
+          data={similar}
+          testID="similar-movies"
+        />
       )}
       {errorEp && (
-        <View>
+        <View testID="error-message">
           <Text>There was en errant error getting the entertainment</Text>
         </View>
       )}
